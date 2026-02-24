@@ -1,0 +1,55 @@
+.topNav{
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(10px);
+}
+
+.topNavBrand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.topNavLogo{
+  width:30px;
+  height:30px;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  background: rgba(167,139,250,0.18);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.topNavTitle{
+  font-weight: 900;
+  letter-spacing: 0.2px;
+}
+
+.topNavLinks{
+  display:flex;
+  gap:10px;
+}
+
+.topLink{
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.04);
+  color: rgba(233,236,255,0.82);
+  text-decoration:none;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.topLink.active{
+  background: rgba(167,139,250,0.18);
+  border-color: rgba(167,139,250,0.35);
+  color: rgba(255,255,255,0.95);
+}

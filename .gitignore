@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+.env
+
+# venv
+.venv*/
+venv*/
+__pycache__/
+*.pyc
+
+# big data / features
+core/data/processed/
+core/data/**/features/
+*.dat
+
+# excel temp files
+~$*.xlsx
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node / React
+node_modules/
+dist/
+.vite/
+
+# Outputs / generated artifacts (your project makes a LOT)
+outputs/
+api_runs/
+rag_uploads/
+*.wav
+*.mp3
+*.npy
+*.pt
+*.ckpt
+*.onnx
+*.zip
+*.png
+
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/

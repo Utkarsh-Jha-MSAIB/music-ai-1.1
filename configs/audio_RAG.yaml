@@ -1,0 +1,122 @@
+# configs/audio_rag.yaml
+# Parameters for the single-step Audio RAG extension pipeline
+
+paths:
+  # Repo layout (keep consistent with the generator yaml)
+  project_root: "."                    # relative to repo root when launched
+  core_dir: "core"                     # used to build DATA_DIR
+  features_dir: "core/data/processed/features"
+  outputs_dir: "outputs"
+
+io:
+  # User input WAV (absolute or relative-to-repo-root)
+  input_filename: "core/data/raw/user_uploads/PAR_Instrumental.wav"
+
+models:
+  # For GRU similarity (currently you fall back to chroma anyway, but keep it here)
+  gru_model_checkpoint: "core/checkpoints/Guitar.ckpt"
+  temp_leader_name: "RAG_SINGLE_STEP"
+
+audio:
+  sample_rate: 16000
+  frame_rate: 250
+  crossfade_time_sec: 0.01
+
+rag:
+  do_arrange: false
+
+  # Target “final song length” after extension
+  target_duration_sec: 30.0
+
+  # Retrieval segment is built in base chunks
+  base_chunk_duration_sec: 4
+
+  # How much of the *end of input* is used to form relevance queries
+  lookback_options_sec: [10, 8, 6, 4]  # [8.5, 8, 7.5, 7]
+
+  # Seam coherence uses last N frames of input vs first N frames of candidate
+  seam_frame_count: 750 #100
+
+scoring:
+  # Composite score = alpha * relevance + beta * coherence
+  alpha: 0.65
+  beta: 0.35
+
+  # Strict attempt coherence minimum; fallback sets it to 0 in code
+  coherence_min_threshold: 0.55  # 0.40
+
+  # Trend
+  w_trend_loud: 0.45
+  w_trend_pitch: 0.25
+
+ # DTW
+  w_dtw: 0.25
+
+
+filters:
+  # RMS consistency filter vs input
+  rms_tolerance_pct: 0.95  # 1.00
+
+search:
+  # Keep Top K final candidates to render / arrange
+  top_k_results: 5
+
+  # Candidate scan stride on DB base-chunks
+  stride: 1
+
+  # Number of attempts (strict then fallback)
+  attempts: 2
+
+  # Additional Parameters
+  reject_unvoiced_seam: false
+  pitch_cents_max: 800
+  pitch_floor: 0.25  # 0.10
+
+  chroma_floor_strict:   0.7 # 0.55
+  chroma_floor_fallback: 0.55 # 0.40
+
+  diverse_enable: true
+  diverse_sim_max: 0.92   # was ~0.92 default; lower = more diverse
+  ban_radius: 20         # was 20; spreads picks across DB
+
+  loud_floor: 0.25   # start 0.50–0.70, tune
+
+  trend_downsample: 2
+
+  # DTW
+  dtw_enable: false
+  dtw_rerank_n: 120
+  dtw_downsample: 3
+  dtw_band: 12
+
+database:
+  # Which instrument DB to retrieve from (your script uses Guitar)
+  instrument: "Guitar"
+
+  # Feature filenames (built under paths.features_dir)
+  pitch_file: "pitch_{instrument}.npy"
+  loudness_file: "loudness_{instrument}.npy"
+  audio_file: "audio_{instrument}.npy"
+
+  chroma_frames_file: "chroma_cqt_frames_{instrument}.npy"
+
+librosa:
+  # Keep these centralized so you don’t have “64” and “2048” sprinkled everywhere
+  pyin_hop_length: 64
+  rms_frame_length: 2048
+  rms_hop_length: 64
+  chroma_hop_length: 512
+  pyin_fmin: 40 
+  pyin_fmax: 2000
+
+gates:
+  # Biggest bottleneck in your stats (Strict rms kills almost everything)
+  enable_rms_prefilter: false
+
+  # Make register jumps a preference, not a hard guillotine
+  enable_pitch_register_gate: true
+  pitch_register_as_penalty: false
+  pitch_register_penalty_w: 0.35
+
+  # keep your printed debug
+  log_stats: true

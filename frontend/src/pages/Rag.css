@@ -1,0 +1,1211 @@
+/* Rag.css — FINAL STACK (SCOPED to .shellRag)
+   ✅ Removed global body styling (prevents CSS bleeding into other pages)
+   ✅ All generic classes scoped under .shellRag
+   ✅ LightWall fixed height + fills (removes black band)
+   ✅ Middle is vertical stack (LightWall -> KPI -> Player -> Loudness)
+   ✅ Right column smaller + single reco block (no reco curve)
+   ✅ All edges visible (min-width fixes + overflow rules)
+*/
+
+/* =========================
+   Theme tokens (safe to keep global)
+   ========================= */
+:root{
+  --bg0:#070913;
+  --bg1:#0b0f25;
+
+  --panel: rgba(6,10,20,0.78);
+  --panel2: rgba(6,10,20,0.62);
+  --border: rgba(255,255,255,0.10);
+
+  --text:#e9ecff;
+  --muted: rgba(233,236,255,0.62);
+
+  --accent:#8aa3ff;
+  --accent2:#6d28d9;
+
+  --ok:#34d399;
+  --warn:#fbbf24;
+  --bad:#fb7185;
+
+  --shadow: 0 22px 60px rgba(0,0,0,0.40);
+  --shadow2: 0 12px 28px rgba(0,0,0,0.32);
+
+  --r: 18px;
+
+  --emberR: rgba(244,63,94,0.78);
+  --emberM: rgba(236,72,153,0.62);
+  --emberW: rgba(251,113,133,0.28);
+  --spec:   rgba(255,255,255,0.14);
+
+  --glassA: rgba(10,14,28,0.74);
+  --glassB: rgba(0,0,0,0.26);
+
+  --rimA: rgba(255,255,255,0.14);
+  --rimB: rgba(255,255,255,0.26);
+}
+
+*{ box-sizing:border-box; }
+html, body { height:100%; }
+
+/* ❌ IMPORTANT: removed global body styling to prevent superimposition */
+/*
+body{
+  margin:0;
+  color:var(--text);
+  background:
+    radial-gradient(1200px 800px at 20% 10%, rgba(109,40,217,0.18), transparent 55%),
+    radial-gradient(900px 700px at 70% 20%, rgba(138,163,255,0.14), transparent 60%),
+    radial-gradient(1200px 900px at 40% 90%, rgba(34,211,238,0.10), transparent 60%),
+    linear-gradient(180deg, var(--bg1), var(--bg0));
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  overflow:hidden;
+}
+*/
+
+/* =========================
+   Shell layout (RAG) — 3 columns
+   ========================= */
+.shellRag{
+  display:grid;
+  grid-template-columns: 260px minmax(0, 1000px) 300px;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 14px;
+  padding: 14px;
+  width: 100vw;
+  max-width: 100vw;
+
+  /* ✅ moved from body so only RAG page gets this look */
+  margin:0;
+  color:var(--text);
+  background:
+    radial-gradient(1200px 800px at 20% 10%, rgba(109,40,217,0.18), transparent 55%),
+    radial-gradient(900px 700px at 70% 20%, rgba(138,163,255,0.14), transparent 60%),
+    radial-gradient(1200px 900px at 40% 90%, rgba(34,211,238,0.10), transparent 60%),
+    linear-gradient(180deg, var(--bg1), var(--bg0));
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  overflow:hidden;
+}
+
+/* allow shrink so edges aren't clipped (scoped) */
+.shellRag .sidebar,
+.shellRag .main,
+.shellRag .recoCol{ min-width:0; }
+
+@media (max-width: 1240px){
+  .shellRag{ grid-template-columns: 280px 1fr; }
+  .shellRag .recoCol{ display:none; }
+}
+@media (max-width: 980px){
+  .shellRag{ grid-template-columns: 1fr; padding: 10px; }
+  .shellRag .sidebar{ position:relative; height:auto; }
+  .shellRag .main{ height:auto; overflow:visible; }
+  .shellRag .recoCol{ position:relative; height:auto; display:block; }
+}
+
+/* =========================
+   Sidebar
+   ========================= */
+.shellRag .sidebar{
+  position:sticky;
+  top:14px;
+  height: calc(100vh - 28px);
+  padding:14px;
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: calc(var(--r) + 6px);
+  background:
+    radial-gradient(900px 700px at 20% 10%, rgba(168,85,247,0.16), transparent 58%),
+    radial-gradient(800px 600px at 80% 70%, rgba(59,130,246,0.12), transparent 60%),
+    linear-gradient(180deg, rgba(6,10,20,0.92), rgba(6,10,20,0.78));
+  box-shadow:
+    0 30px 90px rgba(0,0,0,0.55),
+    inset 0 0 0 1px rgba(255,255,255,0.06);
+  overflow:hidden;
+}
+
+.shellRag .brandBar{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  padding:12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 18px;
+  background:
+    radial-gradient(220px 140px at 18% 25%, rgba(168,85,247,0.10), transparent 70%),
+    radial-gradient(240px 160px at 82% 30%, rgba(59,130,246,0.08), transparent 72%),
+    rgba(0,0,0,0.26);
+  box-shadow:
+    0 14px 34px rgba(0,0,0,0.45),
+    inset 0 0 0 1px rgba(255,255,255,0.05);
+}
+
+.shellRag .logoMark{
+  width:44px;height:44px;
+  border-radius:14px;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  font-weight:900;
+  border: 1px solid var(--rimA);
+  background:
+    radial-gradient(circle at 28% 22%, rgba(255,255,255,0.62), transparent 34%),
+    radial-gradient(circle at 38% 46%, rgba(244,63,94,0.62), transparent 58%),
+    radial-gradient(circle at 64% 36%, rgba(236,72,153,0.62), transparent 64%),
+    radial-gradient(circle at 80% 82%, rgba(251,113,133,0.30), transparent 72%),
+    radial-gradient(circle at 55% 55%, rgba(88,28,135,0.30), rgba(6,10,20,0.92) 72%),
+    linear-gradient(180deg, rgba(10,14,28,0.92), rgba(0,0,0,0.58));
+  box-shadow:
+    0 18px 34px rgba(0,0,0,0.55),
+    0 0 26px rgba(244,63,94,0.18),
+    0 0 34px rgba(236,72,153,0.14),
+    inset 0 1px 0 rgba(255,255,255,0.16),
+    inset 0 0 0 1px rgba(255,255,255,0.06);
+}
+.shellRag .brandBar:hover .logoMark{ filter: brightness(1.08) saturate(1.22); }
+
+.shellRag .brandTitle{ font-weight:900; letter-spacing:0.2px; }
+.shellRag .brandSub{ font-size:12px; color:var(--muted); margin-top:2px; }
+
+.shellRag .statusPills{
+  margin-top:10px;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.shellRag .pill{
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12px;
+  border:1px solid rgba(255,255,255,0.12);
+  background:
+    radial-gradient(120px 60px at 20% 20%, rgba(255,255,255,0.06), transparent 70%),
+    rgba(0,0,0,0.22);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.04),
+    0 10px 22px rgba(0,0,0,0.22);
+}
+.shellRag .pillOk{ border-color: rgba(52,211,153,0.25); }
+.shellRag .pillWarn{ border-color: rgba(251,191,36,0.25); }
+.shellRag .pillBad{ border-color: rgba(251,113,133,0.25); }
+
+.shellRag .controlCard{
+  margin-top:12px;
+  padding:12px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,0.12);
+  background:
+    radial-gradient(420px 220px at 18% 10%, rgba(168,85,247,0.10), transparent 70%),
+    radial-gradient(420px 220px at 82% 30%, rgba(59,130,246,0.08), transparent 72%),
+    rgba(0,0,0,0.22);
+  box-shadow:
+    0 18px 44px rgba(0,0,0,0.52),
+    inset 0 0 0 1px rgba(255,255,255,0.05);
+}
+.shellRag .controlTitle{ font-weight:900; margin-bottom:10px; }
+
+.shellRag .controlRow{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+.shellRag .field{ display:flex; flex-direction:column; gap:6px; }
+.shellRag .label{ font-size:12px; color: rgba(233,236,255,0.76); }
+
+.shellRag .helper{ font-size:11px; color: var(--muted); }
+.shellRag .helperRow{ display:flex; justify-content:space-between; margin-top:8px; }
+
+.shellRag .input{
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.12);
+  background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(0,0,0,0.25));
+  color: var(--text);
+  outline:none;
+  transition: box-shadow 140ms ease, border-color 140ms ease;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+}
+.shellRag .inputTight{ padding:9px 11px; border-radius:12px; }
+.shellRag .input:focus{
+  border-color: rgba(245,247,255,0.45);
+  box-shadow:
+    0 0 0 4px rgba(168,85,247,0.10),
+    0 0 0 7px rgba(59,130,246,0.06);
+}
+
+.shellRag .buttonRow{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px; }
+
+.shellRag .button,
+.shellRag .buttonSecondary{
+  width:100%;
+  padding:10px 12px;
+  border-radius:14px;
+  cursor:pointer;
+  font-weight:900;
+}
+.shellRag .button{
+  border: 1px solid var(--rimB);
+  background:
+    radial-gradient(220px 120px at 22% 22%, rgba(255,255,255,0.18), transparent 56%),
+    radial-gradient(320px 200px at 30% 42%, rgba(244,63,94,0.72), transparent 68%),
+    radial-gradient(280px 190px at 78% 32%, rgba(236,72,153,0.58), transparent 72%),
+    radial-gradient(260px 200px at 78% 92%, rgba(251,113,133,0.26), transparent 76%),
+    linear-gradient(180deg, var(--glassA), var(--glassB));
+  color:#fff;
+  box-shadow:
+    0 20px 54px rgba(0,0,0,0.66),
+    0 0 34px rgba(244,63,94,0.26),
+    0 0 58px rgba(236,72,153,0.18),
+    inset 0 0 0 1px rgba(255,255,255,0.06),
+    inset 0 1px 0 rgba(255,255,255,0.14);
+  text-shadow: 0 0 14px rgba(244,63,94,0.14);
+}
+.shellRag .button:hover{
+  transform: translateY(-1px);
+  filter: brightness(1.08) saturate(1.18);
+  border-color: rgba(255,255,255,0.34);
+}
+.shellRag .button:active{ transform: translateY(0px); filter: brightness(1.02); }
+.shellRag .button:disabled{ opacity:0.55; cursor:not-allowed; transform:none; }
+
+.shellRag .buttonSecondary{
+  border: 1px solid var(--rimA);
+  background:
+    radial-gradient(180px 100px at 24% 20%, rgba(255,255,255,0.12), transparent 58%),
+    radial-gradient(260px 180px at 30% 42%, rgba(244,63,94,0.34), transparent 72%),
+    radial-gradient(260px 180px at 80% 30%, rgba(236,72,153,0.26), transparent 76%),
+    linear-gradient(180deg, rgba(10,14,28,0.64), rgba(0,0,0,0.22));
+  color: rgba(233,236,255,0.92);
+  box-shadow:
+    0 16px 40px rgba(0,0,0,0.60),
+    0 0 18px rgba(244,63,94,0.12),
+    inset 0 0 0 1px rgba(255,255,255,0.05),
+    inset 0 1px 0 rgba(255,255,255,0.10);
+}
+.shellRag .buttonSecondary:hover{
+  transform: translateY(-1px);
+  filter: brightness(1.07) saturate(1.14);
+  border-color: rgba(255,255,255,0.24);
+}
+.shellRag .buttonTight{ padding:10px 10px; border-radius:14px; }
+.shellRag .fileHidden{ display:none; }
+
+/* Past runs marquee */
+.shellRag .runsHeader{ margin-top:14px; display:flex; justify-content:space-between; align-items:end; }
+.shellRag .runsTitle{ font-weight:900; }
+.shellRag .runsHint{ font-size:12px; color: var(--muted); }
+.shellRag .runsMarquee{
+  margin-top:10px;
+  height: 300px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  mask-image: linear-gradient(180deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+}
+.shellRag .marqueeInner{ display:grid; gap:8px; animation: runsMarquee 10s linear infinite; }
+.shellRag .runsMarquee:hover .marqueeInner{ animation-play-state: paused; }
+@keyframes runsMarquee{ 0%{transform:translateY(0)} 100%{transform:translateY(-50%)} }
+.shellRag .runsEmpty{ font-size:13px; color: var(--muted); padding:10px; }
+
+.shellRag .runItem{
+  text-align:left;
+  padding:10px 10px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,0.10);
+  background: radial-gradient(220px 120px at 18% 20%, rgba(168,85,247,0.08), transparent 70%), rgba(0,0,0,0.24);
+  cursor:pointer;
+  transition: transform 120ms ease, border-color 120ms ease;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04), 0 14px 28px rgba(0,0,0,0.40);
+}
+.shellRag .runItem:hover{ transform: translateY(-1px); border-color: rgba(245,247,255,0.20); }
+.shellRag .runItemActive{ border-color: rgba(245,247,255,0.48); }
+.shellRag .runTop{ display:flex; justify-content:space-between; gap:10px; align-items:baseline; }
+.shellRag .runId{ font-weight:900; font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width: 190px; }
+.shellRag .runSec{ font-size:12px; color: rgba(233,236,255,0.70); font-weight:800; }
+.shellRag .runMeta{ font-size:12px; color: var(--muted); margin-top:4px; }
+.shellRag .runTime{ font-size:11px; color: rgba(233,236,255,0.55); margin-top:4px; }
+
+.shellRag .sideFooter{ margin-top:14px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.08); display:grid; gap:6px; }
+.shellRag .sideFootSmall{ font-size:11px; color: rgba(233,236,255,0.55); }
+
+/* =========================
+   Main area — vertical stack
+   ========================= */
+.shellRag .main{
+  padding: 6px 6px 12px 6px;
+  overflow-y:auto;
+  overflow-x:hidden;
+  height: calc(100vh - 28px);
+  border-radius: calc(var(--r) + 10px);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  display:flex;
+  flex-direction:column;
+  gap: 14px;
+}
+.shellRag .main::-webkit-scrollbar{ width:0; height:0; }
+
+/* KPI strip */
+.shellRag .kpiStrip{
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background:
+    radial-gradient(900px 700px at 20% 10%, rgba(168,85,247,0.12), transparent 58%),
+    radial-gradient(800px 600px at 80% 70%, rgba(59,130,246,0.10), transparent 60%),
+    linear-gradient(180deg, rgba(6,10,20,0.86), rgba(6,10,20,0.72));
+  box-shadow:
+    0 22px 60px rgba(0,0,0,0.46),
+    inset 0 0 0 1px rgba(255,255,255,0.05);
+  padding: 12px;
+}
+
+.shellRag .kpiStripHead{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; }
+.shellRag .kpiStripTitle{ min-width:0; display:flex; gap:10px; align-items:baseline; }
+.shellRag .kpiStripTitleLabel{ font-size:12px; color: rgba(233,236,255,0.60); font-weight:900; }
+.shellRag .kpiStripTitleValue{ font-size:14px; font-weight:950; color: rgba(233,236,255,0.92); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width: 56vw; }
+
+.shellRag .kpiStatusPill{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  padding:10px 12px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.16);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05), 0 10px 22px rgba(0,0,0,0.18);
+}
+.shellRag .statusLine{ font-size:11px; font-weight:700; color: rgba(233,236,255,0.82); letter-spacing:0.15px; }
+.shellRag .diamondGlow{
+  width: 10px; height: 10px; display:inline-block; transform: rotate(45deg);
+  border-radius:2px; background: rgba(245,247,255,0.92);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.06), 0 0 14px rgba(244,63,94,0.26), 0 0 26px rgba(236,72,153,0.18);
+  opacity:0.9;
+}
+
+.shellRag .kpiMain{ display:grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap:10px; }
+@media (max-width: 1100px){
+  .shellRag .kpiMain{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.shellRag .kpiMiniPrimary{
+  position: relative;
+  overflow: hidden;
+  padding: 14px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background:
+    radial-gradient(380px 240px at 78% 28%, rgba(59,130,246,0.22), transparent 72%),
+    radial-gradient(360px 220px at 22% 30%, rgba(168,85,247,0.20), transparent 74%),
+    linear-gradient(180deg, rgba(8,12,22,0.82), rgba(0,0,0,0.30));
+  box-shadow: 0 18px 46px rgba(0,0,0,0.58), inset 0 0 0 1px rgba(255,255,255,0.05);
+}
+.shellRag .kpiMiniPrimary::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius: inherit;
+  pointer-events:none;
+  background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(59,130,246,0.10), rgba(168,85,247,0.06), rgba(255,255,255,0.08));
+  opacity: 0.55;
+  mix-blend-mode: screen;
+}
+.shellRag .kpiLabel{ font-size:11px; color: rgba(245,247,255,0.88); font-weight:900; letter-spacing:0.2px; }
+.shellRag .kpiValue{ margin-top:6px; font-weight:950; font-size:20px; color: rgba(255,255,255,0.98); }
+
+.shellRag .kpiPillsOneLine{
+  margin-top: 10px;
+  width: 100%;
+  min-width: 0;
+  display:flex;
+  flex-wrap: nowrap;
+  align-items:center;
+  gap: 8px;
+  overflow: hidden;
+}
+.shellRag .kpiPillTiny{
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: radial-gradient(120px 60px at 18% 22%, rgba(168,85,247,0.10), transparent 72%), rgba(0,0,0,0.20);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04), 0 10px 22px rgba(0,0,0,0.20);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.shellRag .kpiPillK{ font-size:9px; color: rgba(233,236,255,0.58); font-weight:900; margin-right:8px; }
+.shellRag .kpiPillV{ font-size:11px; color: rgba(233,236,255,0.92); font-weight:950; }
+
+/* Panels */
+.shellRag .panel{
+  padding:12px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,0.10);
+  background:
+    radial-gradient(420px 220px at 18% 10%, rgba(168,85,247,0.10), transparent 70%),
+    radial-gradient(420px 220px at 82% 30%, rgba(59,130,246,0.08), transparent 72%),
+    rgba(0,0,0,0.18);
+  box-shadow: 0 18px 44px rgba(0,0,0,0.52), inset 0 0 0 1px rgba(255,255,255,0.05);
+}
+.shellRag .panelTight{ padding:10px; }
+.shellRag .panelHeaderTight{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:10px; }
+.shellRag .panelTitle{ font-weight:950; }
+.shellRag .panelHintTight{ font-size:12px; color: var(--muted); }
+
+/* LightWall panel — FIXED HEIGHT so no “black band” */
+.shellRag .lightPanel{
+  height: 220px;       /* ← increase this */
+  min-height: 220px;
+  max-height: 360px;
+  overflow:hidden;
+}
+
+/* your header row (whatever you use above the canvas) */
+.shellRag .lightPanel .panelHeaderTight{ flex: 0 0 auto; }
+
+/* the canvas container fills the rest perfectly */
+.shellRag .lightPanelInner{
+  flex: 1 1 auto;
+  min-height: 0;
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 18px 44px rgba(0,0,0,0.46);
+  background: rgba(0,0,0,0.10);
+}
+
+/* make the canvas fill with no baseline gap */
+.shellRag .ragLightsCanvas{
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* optional hide badge */
+.shellRag .ragLightsBadge{ display:none; }
+
+/* Player Mini */
+.shellRag .playerMini{
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background:
+    radial-gradient(420px 220px at 18% 10%, rgba(168,85,247,0.10), transparent 70%),
+    radial-gradient(420px 220px at 82% 30%, rgba(59,130,246,0.08), transparent 72%),
+    rgba(0,0,0,0.18);
+  box-shadow: 0 14px 34px rgba(0,0,0,0.35);
+  display: grid;
+  gap: 10px;
+  overflow: hidden;
+}
+.shellRag .playerMiniTop{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; }
+.shellRag .playerMiniSub{
+  font-size:11px;
+  color: rgba(233,236,255,0.55);
+  font-weight:800;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  max-width: 520px;
+}
+
+.shellRag .playerMiniUI{
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  grid-template-rows: auto auto auto;
+  grid-template-areas:
+    "play timeline"
+    ".    times"
+    ".    dl";
+  gap: 6px 12px;
+  align-items: center;
+}
+
+/* fixed layout */
+.shellRag .playerMiniUIFixed{
+  position: relative;
+  padding-bottom: 28px;
+}
+.shellRag .playerMiniUIFixed .downloadRowSm{
+  position:absolute;
+  right:0;
+  bottom: 0;
+  margin:0;
+  display:flex;
+  justify-content:flex-end;
+}
+
+/* Lock the whole player card height so it never jumps */
+.shellRag .playerMiniFixed{ min-height: 98px; }
+
+/* Ensure the “empty” placeholder occupies same space as the real controls */
+.shellRag .playerMiniFixed .empty{
+  min-height: 49px;
+  display:flex;
+  align-items:center;
+}
+
+/* Play button */
+.shellRag .playBtn{
+  grid-area: play;
+  all: unset;
+  box-sizing: border-box;
+  width: 48px;
+  height: 38px;
+  border-radius: 14px;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  border: 1px solid rgba(255,255,255,0.14);
+  background:
+    radial-gradient(18px 18px at 30% 25%, rgba(255,255,255,0.10), transparent 70%),
+    radial-gradient(90px 54px at 75% 35%, rgba(168,85,247,0.10), transparent 70%),
+    rgba(0,0,0,0.30);
+  box-shadow: 0 14px 28px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.10);
+  transition: transform 120ms ease, filter 120ms ease, border-color 120ms ease;
+}
+.shellRag .playBtn:hover{ transform: translateY(-1px); filter: brightness(1.04); border-color: rgba(255,255,255,0.22); }
+.shellRag .playBtn:active{ transform: translateY(0px); filter: brightness(0.98); }
+.shellRag .playBtn:disabled{ opacity:0.55; cursor:not-allowed; transform:none; filter:none; }
+
+.shellRag .playIcon{ width:18px; height:18px; position:relative; display:block; }
+.shellRag .playIcon::before{
+  content:"";
+  position:absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.98);
+  clip-path: polygon(22% 12%, 90% 50%, 22% 88%);
+  filter: drop-shadow(0 0 10px rgba(255,255,255,0.14)) drop-shadow(0 0 18px rgba(167,139,250,0.12));
+}
+.shellRag .playBtn.isPlaying .playIcon::before{ clip-path:none; background:transparent; filter:none; }
+.shellRag .playBtn.isPlaying .playIcon::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(rgba(255,255,255,0.98), rgba(255,255,255,0.98)) left 5px center / 4px 14px no-repeat,
+    linear-gradient(rgba(255,255,255,0.98), rgba(255,255,255,0.98)) right 5px center / 4px 14px no-repeat;
+  filter: drop-shadow(0 0 14px rgba(167,139,250,0.10));
+}
+
+/* Timeline */
+.shellRag .range{
+  --pct: 0;
+  -webkit-appearance:none;
+  appearance:none;
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: transparent;
+  outline:none;
+  margin: 0;
+  padding: 0;
+}
+.shellRag .timeline{ grid-area: timeline; width:100%; min-width:0; }
+
+.shellRag .range::-webkit-slider-runnable-track{
+  height: 4px;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.26)),
+    linear-gradient(90deg,
+      rgba(244,63,94,0.82) calc(var(--pct) * 100%),
+      rgba(255,255,255,0.08) 0
+    );
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    inset 0 -1px 0 rgba(0,0,0,0.32),
+    inset 0 0 0 1px rgba(255,255,255,0.08),
+    0 0 16px rgba(244,63,94,0.12);
+}
+.shellRag .range::-moz-range-track{
+  height: 4px;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.26)),
+    linear-gradient(90deg,
+      rgba(244,63,94,0.82) calc(var(--pct) * 100%),
+      rgba(255,255,255,0.08) 0
+    );
+}
+
+.shellRag .range::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  appearance:none;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  transform: rotate(45deg);
+  background: rgba(245,247,255,0.95);
+  border: 2px solid rgba(12,14,24,0.60);
+  box-shadow:
+    0 0 0 2px rgba(255,255,255,0.05),
+    0 0 12px rgba(244,63,94,0.18),
+    0 0 20px rgba(236,72,153,0.12),
+    0 10px 16px rgba(0,0,0,0.40);
+  cursor:pointer;
+  margin-top: -3px;
+}
+.shellRag .range::-moz-range-thumb{
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  transform: rotate(45deg);
+  background: rgba(245,247,255,0.95);
+  border: 2px solid rgba(12,14,24,0.60);
+  box-shadow:
+    0 0 0 2px rgba(255,255,255,0.05),
+    0 0 12px rgba(244,63,94,0.18),
+    0 0 20px rgba(236,72,153,0.12),
+    0 10px 16px rgba(0,0,0,0.40);
+  cursor:pointer;
+}
+
+.shellRag .timeRowSm{
+  grid-area: times;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  width: 100%;
+  min-width: 0;
+  margin-top: -6px;
+}
+.shellRag .timeText{
+  line-height: 1;
+  font-size: 11px;
+  color: rgba(233,236,255,0.62);
+  font-weight: 850;
+  white-space: nowrap;
+}
+.shellRag .timeText:first-child{ margin-left: -6px; }
+
+.shellRag .downloadRowSm{ grid-area: dl; display:flex; gap:10px; justify-content:flex-end; flex-wrap:nowrap; }
+.shellRag .linkBtnSm{
+  display:inline-block;
+  padding: 8px 10px;
+  border-radius: 12px;
+  border:1px solid rgba(255,255,255,0.12);
+  background: radial-gradient(140px 70px at 20% 20%, rgba(255,255,255,0.06), transparent 70%), rgba(0,0,0,0.18);
+  color: rgba(233,236,255,0.92);
+  font-size: 12px;
+  font-weight: 850;
+  text-decoration:none;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04), 0 10px 22px rgba(0,0,0,0.22);
+}
+
+.shellRag .nativeAudioHidden{ display:none; }
+.shellRag .empty{ font-size:13px; color: var(--muted); padding:6px 0; }
+
+/* Charts */
+.shellRag .vizStack{ display:grid; gap:10px; margin-top: 10px; }
+.shellRag .chartCard{
+  padding:12px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,0.10);
+  background:
+    radial-gradient(420px 220px at 18% 10%, rgba(168,85,247,0.10), transparent 70%),
+    radial-gradient(420px 220px at 82% 30%, rgba(59,130,246,0.08), transparent 72%),
+    rgba(0,0,0,0.16);
+  box-shadow: var(--shadow2);
+}
+.shellRag .chartTitleRow{ display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.shellRag .chartTitle{ font-weight:950; color: rgba(233,236,255,0.92); }
+.shellRag .chartHint{ font-size:12px; color: rgba(233,236,255,0.40); font-weight:800; }
+.shellRag .chartWrap{ width:100%; }
+
+/* Premium buffer */
+.shellRag .premiumBuffer{
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px dashed rgba(255,255,255,0.18);
+  background:
+    radial-gradient(420px 220px at 18% 10%, rgba(168,85,247,0.10), transparent 70%),
+    radial-gradient(420px 220px at 82% 30%, rgba(59,130,246,0.08), transparent 72%),
+    rgba(0,0,0,0.16);
+  box-shadow: var(--shadow2);
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+.shellRag .premiumIcon{
+  width: 14px;
+  height: 14px;
+  transform: rotate(45deg);
+  border-radius: 3px;
+  background: rgba(245,247,255,0.92);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.06), 0 0 14px rgba(244,63,94,0.26), 0 0 26px rgba(236,72,153,0.18);
+  flex: 0 0 auto;
+}
+.shellRag .premiumTitle{ font-weight: 950; }
+.shellRag .premiumSub{ font-size:12px; color: rgba(233,236,255,0.58); margin-top: 2px; }
+
+/* =========================
+   Right Reco column (single block)
+   ========================= */
+.shellRag .recoCol{
+  position: sticky;
+  top: 14px;
+  height: calc(100vh - 28px);
+  border-radius: calc(var(--r) + 10px);
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.10);
+  background:
+    radial-gradient(1200px 900px at 30% 20%, rgba(168,85,247,0.18), transparent 55%),
+    radial-gradient(900px 700px at 70% 70%, rgba(59,130,246,0.14), transparent 58%),
+    linear-gradient(180deg, rgba(6,10,20,0.92), rgba(6,10,20,0.86));
+  box-shadow: var(--shadow);
+  display:flex;
+  flex-direction: column;
+}
+
+.shellRag .recoColHead{
+  padding: 14px 14px 10px 14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.shellRag .recoColTitle{
+  font-weight: 950;
+  letter-spacing: 0.2px;
+  color: rgba(245,247,255,0.92);
+}
+.shellRag .recoColSub{
+  font-size: 12px;
+  color: rgba(233,236,255,0.62);
+  font-weight: 850;
+}
+
+.shellRag .recoColToolbar{
+  padding: 10px 14px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap: wrap;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.shellRag .chipBtn{
+  padding: 8px 10px;
+  border-radius: 999px;
+  border:1px solid rgba(255,255,255,0.12);
+  background:
+    radial-gradient(140px 70px at 20% 20%, rgba(255,255,255,0.06), transparent 70%),
+    rgba(0,0,0,0.18);
+  color: rgba(233,236,255,0.88);
+  font-weight: 900;
+  cursor:pointer;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04), 0 10px 22px rgba(0,0,0,0.22);
+  transition: transform 120ms ease, border-color 120ms ease, filter 120ms ease;
+}
+.shellRag .chipBtn:hover{ transform: translateY(-1px); border-color: rgba(245,247,255,0.20); filter: brightness(1.03); }
+.shellRag .chipBtn:disabled{ opacity:0.55; cursor:not-allowed; transform:none; }
+.shellRag .chipBtn.strong{
+  border-color: rgba(245,247,255,0.18);
+  background:
+    radial-gradient(180px 90px at 25% 20%, rgba(168,85,247,0.12), transparent 65%),
+    radial-gradient(220px 120px at 85% 30%, rgba(59,130,246,0.10), transparent 70%),
+    rgba(0,0,0,0.18);
+}
+
+.shellRag .chip{
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.16);
+  color: rgba(233,236,255,0.82);
+  font-weight: 900;
+}
+.shellRag .scoreChip{ border-color: rgba(255,255,255,0.14); }
+.shellRag .spacer{ flex: 1 1 auto; min-width: 12px; }
+
+.shellRag .recoList{
+  padding: 12px 12px 12px 12px;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  scrollbar-width: none;
+
+  display:flex;
+  flex-direction:column;
+  gap: 10px;
+}
+.shellRag .recoList::-webkit-scrollbar{ width:0; height:0; }
+
+/* Vertical reco card with Play button INSIDE */
+.shellRag .recoV{
+  display:grid;
+  grid-template-columns: 52px 1fr;
+  gap: 10px;
+  align-items: stretch;
+  padding: 10px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background:
+    radial-gradient(260px 160px at 20% 20%, rgba(168,85,247,0.10), transparent 72%),
+    radial-gradient(260px 160px at 80% 30%, rgba(59,130,246,0.08), transparent 76%),
+    rgba(0,0,0,0.20);
+  box-shadow: 0 14px 34px rgba(0,0,0,0.42);
+  overflow:hidden;
+}
+.shellRag .recoVActive{
+  border-color: rgba(245,247,255,0.55);
+  box-shadow: 0 0 0 4px rgba(59,130,246,0.10), 0 14px 34px rgba(0,0,0,0.42);
+}
+
+.shellRag .recoVPlay{
+  all: unset;
+  cursor: pointer;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.14);
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(18px 18px at 30% 25%, rgba(255,255,255,0.10), transparent 70%),
+    radial-gradient(120px 80px at 70% 35%, rgba(244,63,94,0.10), transparent 70%),
+    rgba(0,0,0,0.30);
+  box-shadow: 0 14px 28px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.10);
+  transition: transform 120ms ease, filter 120ms ease, border-color 120ms ease;
+}
+.shellRag .recoVPlay:hover{ transform: translateY(-1px); filter: brightness(1.04); border-color: rgba(255,255,255,0.22); }
+.shellRag .recoVPlay:active{ transform: translateY(0px); filter: brightness(0.98); }
+
+.shellRag .recoVBody{
+  all: unset;
+  cursor: pointer;
+  display:block;
+  padding: 2px 2px 2px 0;
+  min-width: 0;
+}
+.shellRag .recoVTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.shellRag .recoVTitle{
+  font-weight: 950;
+  color: rgba(245,247,255,0.92);
+}
+.shellRag .recoVTiny{
+  font-size: 12px;
+  color: rgba(233,236,255,0.66);
+  font-weight: 800;
+}
+
+.shellRag .recoVRow{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap: 10px;
+  padding: 3px 0;
+}
+.shellRag .recoVK{
+  font-size: 11px;
+  color: rgba(233,236,255,0.70);
+  font-weight: 900;
+}
+.shellRag .recoVV{
+  font-size: 12px;
+  color: rgba(255,255,255,0.92);
+  font-weight: 950;
+}
+.shellRag .recoVHint{
+  margin-top: 6px;
+  font-size: 11px;
+  color: rgba(233,236,255,0.56);
+  font-weight: 800;
+}
+
+.shellRag .headerRight{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.shellRag .idlePill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border:1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.18);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05), 0 10px 22px rgba(0,0,0,0.18);
+  font-size: 12px;
+  font-weight: 900;
+  color: rgba(233,236,255,0.82);
+  user-select:none;
+}
+
+.shellRag .idleDot{
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  transform: rotate(45deg);
+  background: rgba(245,247,255,0.92);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.06), 0 0 14px rgba(244,63,94,0.20);
+  opacity: 0.9;
+}
+
+/* Let reco list breathe a bit */
+.shellRag .recoList{
+  padding: 14px;
+  gap: 14px;
+}
+
+/* Bigger cards + allow content to wrap */
+.shellRag .recoV{
+  padding: 14px;
+  border-radius: 20px;
+  overflow: visible;         /* was hidden */
+  min-height: 124px;
+  align-items: start;
+  grid-template-columns: 64px 1fr; /* was 52px 1fr */
+}
+
+/* Make the play button fill the column height nicely */
+.shellRag .recoVPlay{
+  min-height: 92px;
+  border-radius: 18px;
+}
+
+/* Title should wrap if needed (no truncation) */
+.shellRag .recoVTitle{
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  line-height: 1.15;
+}
+
+/* Rows: allow label/value to wrap instead of clipping */
+.shellRag .recoVRow{ align-items: baseline; }
+.shellRag .recoVK,
+.shellRag .recoVV{
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Sticky bottom control area inside reco column */
+.shellRag .recoFooterNav{
+  position: sticky;
+  bottom: 0;
+  padding: 10px 14px 14px;
+  background: linear-gradient(180deg, transparent, rgba(6,10,20,0.92) 35%, rgba(6,10,20,0.98));
+  border-top: 1px solid rgba(255,255,255,0.08);
+  z-index: 5;
+}
+
+/* Button style to match your chips */
+.shellRag .recoNextBtn{
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background:
+    radial-gradient(180px 90px at 25% 20%, rgba(168,85,247,0.10), transparent 65%),
+    radial-gradient(220px 120px at 85% 30%, rgba(59,130,246,0.08), transparent 70%),
+    rgba(0,0,0,0.18);
+  color: rgba(245,247,255,0.92);
+  font-weight: 950;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04), 0 12px 26px rgba(0,0,0,0.30);
+}
+.shellRag .recoNextBtn:hover{ transform: translateY(-1px); border-color: rgba(245,247,255,0.22); }
+.shellRag .recoNextBtn:active{ transform: translateY(0px); }
+
+/* --- LightWall panel must have a real height --- */
+.lightPanel {
+  padding: 0 !important;
+}
+
+.lightPanelInner {
+  height: clamp(220px, 34vh, 360px); /* pick your vibe */
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r);
+}
+
+/* --- LightsWall wrapper fills its parent --- */
+.ragLights {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+}
+
+/* --- Canvas MUST fill the wrapper --- */
+.ragLightsCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Badge should sit above canvas */
+.ragLightsBadge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* LightWall wrapper MUST create a stacking context */
+.ragLights{
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;            /* clip canvas nicely */
+  border-radius: 16px;
+}
+
+/* Canvas sits underneath */
+.ragLightsCanvas{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 1;
+}
+
+/* Badge sits ABOVE canvas no matter what */
+.ragLightsBadge{
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  z-index: 5;                  /* higher than canvas */
+  pointer-events: none;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 8px 10px;
+  border-radius: 999px;
+
+  color: rgba(233,236,255,0.92);
+  font: 600 12px/1 system-ui;
+
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.14);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  text-shadow: 0 1px 10px rgba(0,0,0,0.55);
+}
+
+/* little diamond glow */
+.ragLightsBadgeDiamond{
+  width: 10px;
+  height: 10px;
+  border-radius: 4px;
+  transform: rotate(45deg);
+  background: radial-gradient(circle at 30% 30%,
+    rgba(255,255,255,0.9),
+    rgba(255,120,200,0.55),
+    rgba(90,140,255,0.15)
+  );
+  box-shadow:
+    0 0 10px rgba(255,120,200,0.35),
+    0 0 16px rgba(90,140,255,0.22);
+} 
+
+/* ===== LightWall badge: NUCLEAR FORCE OVERRIDE ===== */
+.ragLights{
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  isolation: isolate !important;     /* prevents blend/composite weirdness */
+}
+
+/* Put canvas firmly underneath */
+.ragLightsCanvas{
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 0 !important;
+}
+
+/* Force badge visible no matter what */
+.ragLightsBadge{
+  position: absolute !important;
+  left: 14px !important;
+  top: 14px !important;
+  z-index: 999999 !important;
+
+  display: inline-flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+
+  pointer-events: none !important;
+
+  padding: 10px 12px !important;
+  border-radius: 999px !important;
+
+  color: #ffffff !important;
+  font: 700 13px/1 system-ui !important;
+  letter-spacing: 0.2px !important;
+
+  background: rgba(0,0,0,0.55) !important;  /* make it unmistakable */
+  border: 1px solid rgba(255,255,255,0.22) !important;
+
+  text-shadow: 0 2px 14px rgba(0,0,0,0.75) !important;
+}
+
+/* Diamond visible too */
+.ragLightsBadgeDiamond{
+  width: 11px !important;
+  height: 11px !important;
+  border-radius: 4px !important;
+  transform: rotate(45deg) !important;
+  background: rgba(255,255,255,0.9) !important;
+  box-shadow: 0 0 12px rgba(255,255,255,0.35) !important;
+}
+
+/* ===== LightWall badge: subtle whisper mode ===== */
+
+/* keep it above canvas */
+.ragLightsBadge{
+  left: 16px !important;
+  top: 14px !important;
+
+  padding: 7px 10px !important;
+  border-radius: 999px !important;
+
+  font: 500 10px/1 system-ui !important;
+  letter-spacing: 0.15px !important;
+
+  color: rgba(233,236,255,0.80) !important;
+  background: rgba(6,10,20,0.28) !important;     /* subtle glass */
+  border: 1px solid rgba(255,255,255,0.10) !important;
+
+  box-shadow: none !important;
+  text-shadow: 0 1px 10px rgba(0,0,0,0.35) !important;
+
+  backdrop-filter: blur(6px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(6px) saturate(120%) !important;
+
+  opacity: 0.72 !important;
+}
+
+/* tiny diamond, not a flashlight */
+.ragLightsBadgeDiamond{
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 3px !important;
+  background: rgba(233,236,255,0.55) !important;
+  box-shadow: 0 0 10px rgba(233,236,255,0.14) !important;
+}
+
+/* OPTIONAL: only show clearly when hovering LightWall */
+.ragLights:hover .ragLightsBadge{
+  opacity: 0.92 !important;
+}

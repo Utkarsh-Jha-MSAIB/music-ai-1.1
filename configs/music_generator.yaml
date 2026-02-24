@@ -1,0 +1,60 @@
+# Parameters for music generation script
+
+paths:
+  project_root: "."                       # relative to repo root when launched
+  checkpoints_dir: "core/checkpoints"
+  outputs_dir: "outputs"
+  features_candidates:
+    - "data/processed/features"
+    - "core/data/processed/features"
+
+checkpoints:
+  arranger: "arranger.ckpt"
+  models:
+    Bass: "Bass.ckpt"
+
+instruments:
+  leader: "Guitar"
+  arranger_followers: ["Bass"]
+  add_drums: true
+  drum_volume: 2.0
+  arranger_map:
+    Bass: 0
+    Drums: 1
+  num_arranger_channels: 2
+
+generation:
+  manual_start_index: 1855 #4000
+  seconds: 20
+  const_window_sec: 4.0
+  noise_scale:
+    default: 0.05
+    Bass: 0.001
+  seed: 123
+  device: "auto"    # auto | cpu | cuda
+  rhythmic_match_ds: 8
+
+io:
+  save_reference: true
+  save_stems: true
+  save_report_card: false
+  run_subdir: "api_runs" #"local_runs"  
+
+validation:
+  require_files:
+    leader: ["audio_{leader}.npy", "pitch_{leader}.npy", "loudness_{leader}.npy"]
+    Bass:   ["audio_Bass.npy", "pitch_Bass.npy", "loudness_Bass.npy"]
+    Drums:  ["audio_Drums.npy", "loudness_Drums.npy"]
+
+audio:
+  sample_rate: 16000
+  frame_rate: 250
+  hop_samples: 64         # samples per frame (16000/250=64)
+  chroma_hop_length: 512  # for librosa chroma
+  chroma_sr: 16000
+
+mix:
+  leader_gain: 0.65
+  duck_strength: 0.5
+  leader_to_acc_ratio: 0.9
+  leader_target_rms: 0.08
